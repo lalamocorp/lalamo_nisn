@@ -1,0 +1,21 @@
+/* Your app custom files in this file */
+/* Tab bar icons */
+.logo{
+  position: relative ;
+  z-index:11000;
+  left: 50%;
+  margin-left:-105px;
+  width : 200px ;
+  height: 200px ;
+  margin-bottom:-30px;
+  
+}
+.modal-title{
+  font-size:13px;
+}
+.modal .preloader{
+  width:32px;
+}
+.modal-overlay{
+  background:rgba(0, 0, 0, 0.65);
+}
