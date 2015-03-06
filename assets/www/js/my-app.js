@@ -1,6 +1,9 @@
 // Agus Ibrahim
 // @agusmibrahim
 
+// exitPrompt enable or not
+// Untuk menghandle saat barcodescanner di cancel
+// agar pertanyaan exit tidak muncul
 var exitPrompt=true;
 // Cek apakah cordova sudah terhubung
 document.addEventListener("deviceready", function (){
@@ -9,18 +12,21 @@ document.addEventListener("deviceready", function (){
 
 // Tangani tombol back
 document.addEventListener("backbutton", function (){
+	// saat ada modal muncul, backbutton berfungsi sebagai penghilang modal tersebt
 	if ($$(".modal-overlay-visible").length>0){
 		myApp.closeModal(".modal-in");
+	// saat sidebar keluar, backbutton berfungsi utk menutup sidebar tersebut
 	}else if($$("body").hasClass("with-panel-left-reveal")){
 		myApp.closePanel();
+	// exitPrompt dilibatkan kesini
+	// tanpa pengecualian ini, pertanyaan exit akan muncul saat barcodescanner di cancel
+	// saat page berada di index.html (awal) dan exitPrompt bernilai true, maka pertanyaan exit akan muncul
 	}else if(mainView.url.indexOf("/www/index.html")>-1&&exitPrompt){
 			myApp.confirm('Do you really want to exit?', function () {
-       	     navigator.app.exitApp();
+       	    // keluar aplikasi
+			navigator.app.exitApp();
     });
 	}
-});
-document.addEventListener("menubutton", function (){
-	myApp.alert($$(".modal-overlay-visible").length);
 });
 // Tangani saat keyboard show/hide
 // Menggunakan plugin keyboard dari ionic
@@ -178,5 +184,5 @@ function showProfile(data){
 	myApp.popup(prof);
 }
 $$(".link2").on("click", function (){
-	myApp.alert("Hello Agus");
+	myApp.alert("Hello Agus. press backbutton to close me");
 });
