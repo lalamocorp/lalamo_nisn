@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="lib/css/framework7.keypad.min.css">
     <!-- Path to your custom app styles-->
     <link rel="stylesheet" href="css/my-app.css">
+	<link rel="stylesheet" href="css/fontello-embedded.css">
   </head>
   <body>
     <!-- Status bar overlay for fullscreen mode-->
@@ -45,21 +46,23 @@
 			  <div class="list-block inset">
 				<ul id="inputmode">
 				  <li class="accordion-item" id="bynisn"><a href="#" class="item-content item-link">
+					  <div class="item-media"><i class="icon icon-pencil"></i></div>
 					  <div class="item-inner">
 						<div class="item-title">NISN</div>
 					  </div></a>
 					<div class="accordion-item-content">
 					  <div class="content-block">
 						<div class="item-inner">
-						  
 						  <div class="item-input" id="nisnmode">
 							<input type="numpad" readonly id="nisn" placeholder="Masukan NISN">
 						  </div>
+						  <a href="#" class="scan" id="scanbar" ><div class="item-media"><i class="icon icon-cameras"></i></div></a>
 						</div>
 					  </div>
 					</div>
 				  </li>
 				  <li class="accordion-item" id="byname"><a href="#" class="item-content item-link">
+					  <div class="item-media"><i class="icon icon-user"></i></div>
 					  <div class="item-inner">
 						<div class="item-title">Nama</div>
 					  </div></a>
@@ -101,7 +104,13 @@
 					  </div>
 					</div>
 				  </li>
-				  <li><a href="#" class="button button-fill color-blue" disabled id="kirim">Kirim</a></li>
+				  <!--<li class="accordion-item"><a href="#" id="scanbar" class="item-content item-link">
+					 <div class="item-media"><i class="icon icon-barcode"></i></div>
+					  <div class="item-inner">
+						<div class="item-title">Scan Barcode</div>
+					  </div></a>
+				  </li>-->
+				  <li><a href="#" class="button button-fill color-blue" disabled id="kirim">LOGIN</a></li>
 				</ul>
 			  </div>
               
@@ -110,7 +119,7 @@
         </div>
         <!-- Bottom Toolbar-->
         <div class="toolbar">
-          <div class="toolbar-inner"><a href="#" class="link">Link 1</a><a href="#" class="link">Link 2</a></div>
+          <div class="toolbar-inner"><a href="#" data-popup=".popup-profile" onclick="showProfile()">Link 1</a><a href="#" class="link">Link 2</a></div>
         </div>
       </div>
     </div>
