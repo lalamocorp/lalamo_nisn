@@ -1,6 +1,7 @@
 // Agus Ibrahim
 // @agusmibrahim
 
+var exitPrompt=true;
 // Cek apakah cordova sudah terhubung
 document.addEventListener("deviceready", function (){
 	//myApp.alert("Ready");
@@ -8,9 +9,19 @@ document.addEventListener("deviceready", function (){
 
 // Tangani tombol back
 document.addEventListener("backbutton", function (){
-	//temtukan disini
+	if ($$(".modal-overlay-visible").length>0){
+		myApp.closeModal(".modal-in");
+	}else if($$("body").hasClass("with-panel-left-reveal")){
+		myApp.closePanel();
+	}else if(mainView.url.indexOf("/www/index.html")>-1&&exitPrompt){
+			myApp.confirm('Do you really want to exit?', function () {
+       	     navigator.app.exitApp();
+    });
+	}
 });
-
+document.addEventListener("menubutton", function (){
+	myApp.alert($$(".modal-overlay-visible").length);
+});
 // Tangani saat keyboard show/hide
 // Menggunakan plugin keyboard dari ionic
 // Untuk memperbaiki masalah fokus pada input saat keyboard muncul
@@ -141,6 +152,9 @@ $$("#scanbar").on("click", function (){
 		  if (!result.cancelled){
 			  // set result ke #nisn
 			  $$("#nisn").val(result.text);
+		  }else{
+			  exitPrompt=false;
+			  setTimeout(function (){exitPrompt=true;}, 1000);
 		  }
       },
 	  // scan error
@@ -163,3 +177,6 @@ function showProfile(data){
     '</div>';
 	myApp.popup(prof);
 }
+$$(".link2").on("click", function (){
+	myApp.alert("Hello Agus");
+});
