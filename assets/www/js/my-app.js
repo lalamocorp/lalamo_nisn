@@ -12,9 +12,12 @@ document.addEventListener("deviceready", function (){
 
 // Tangani tombol back
 document.addEventListener("backbutton", function (){
-	// saat ada modal muncul, backbutton berfungsi sebagai penghilang modal tersebt
+	// jika ada modal notif muncul, maka backbutton berfungsi utk menghilakan modal tersebut
 	if ($$(".modal-overlay-visible").length>0){
 		myApp.closeModal(".modal-in");
+	// jika ada modal picker muncul, maka backbutton berfungsi utk menghilakan modal tersebut
+	}else if ($$(".picker-modal").length>0){
+		myApp.closeModal(".picker-modal");
 	// saat sidebar keluar, backbutton berfungsi utk menutup sidebar tersebut
 	}else if($$("body").hasClass("with-panel-left-reveal")){
 		myApp.closePanel();
@@ -29,16 +32,20 @@ document.addEventListener("backbutton", function (){
 	}
 });
 // Tangani saat keyboard show/hide
-// Menggunakan plugin keyboard dari ionic
+// Menggunakan plugin keyboard dari ionic (thanks ionicframework.com)
 // Untuk memperbaiki masalah fokus pada input saat keyboard muncul
 // Sibet sih, tapi ampuh
 window.addEventListener('native.keyboardshow', keyboardShowHandler);
 function keyboardShowHandler(e){
+  // saat keyboard muncul, tambahkan ruang pada body bawah seukuran keyboard dikurangi 50
   $$(".page-content").css("padding-bottom", (e.keyboardHeight-50)+"px");
+  // setelah mendapatkan space, scroll halaman agar input nama fokus ke layar (ga tertutup keyboard)
   document.getElementById( 'nama' ).scrollIntoView();
 }
 window.addEventListener('native.keyboardhide', keyboardHideHandler);
 function keyboardHideHandler(e){
+  // saat keyboard hide dan tidak ada modal picker
+  // hilangkan ruang (yg tadinya dibuat)
   if (!$$("body").hasClass("with-picker-modal")){
 	  $$(".page-content").attr("style", "");
   }
@@ -69,7 +76,7 @@ var mainView = myApp.addView('.view-main', {
 // Batasi jumalah karakter input NISN, serta sembunyikan tombol titik
 myApp.keypad({
 	input: '#nisn',
-	valueMaxLength: 10,
+	valueMaxLength: 13,
 	dotButton: false,
 });
 
@@ -89,8 +96,9 @@ $$("#byname").on("open", function (){
 
 // Tangani accordion opened dan close
 // Untuk keperluan hide/show tombol login
+// .change() berguna mentrigger perubahan data (agar ditangani on("change") )
 $$("#byname").on("close", function (){
-	$$("#nama").change();
+	$$("#namemode").change();
 });
 $$("#bynisn").on("close", function (){
 	$$("#nisnmode").change();
@@ -99,7 +107,7 @@ $$("#bynisn").on("opened", function (){
 	$$("#nisnmode").change();
 });
 $$("#byname").on("opened", function (){
-	$$("#nama").change();
+	$$("#namemode").change();
 });
 
 // Input kalender
@@ -107,13 +115,15 @@ myApp.calendar({
     input: '#tanggalan'
 });
 
-// Tombol login di klik
+// Tangani saat tombol login di klik
 // Masih belum bekerja ;)
 $$('#kirim').on('click', function () {
+  // alernatif (jika tombol ngga disable saat accordion tertutup) user dilarang submit data
   if (!$$(".accordion-item-expanded").html()){
 	  myApp.alert("Pilih metode masuk");
 	  return;
 	  }
+  // cek mana yang terbuka, NISN atau DATA NAMA
   if ($$("#bynisn").hasClass("accordion-item-expanded")){
 	  myApp.alert("NISN akan diproses");
   }else if ($$("#byname").hasClass("accordion-item-expanded")){
@@ -122,15 +132,19 @@ $$('#kirim').on('click', function () {
 });
 
 // Saat mengisi/mengetik NISN
+// event "change" akan mengetahui perubahan data
 // jika panjang NISN=10 maka tombol login akan enable dan sebaliknya
 $$("#nisnmode").on("change", function (){
 	if ($$("#bynisn").hasClass("accordion-item-expanded")){
-		if ($$("#nisn").val().length==10){
+		if ($$("#nisn").val().length==13){
+			// hapus attribut disabled pada button
 			$$("#kirim").removeAttr("disabled");
 		}else{
+			// tambahkan attribut disabled pada button
 			$$("#kirim").attr("disabled","");
 		}
 	}else{
+		// tambahkan attribut disabled pada button
 		$$("#kirim").attr("disabled","");
 	}
 });
@@ -158,22 +172,29 @@ $$("#scanbar").on("click", function (){
 		  if (!result.cancelled){
 			  // set result ke #nisn
 			  $$("#nisn").val(result.text);
+			  // update tombol dengan cara trigger change
+			  $$("#nisnmode").change();
 		  }else{
+			  // exitPrompt set ke false agar pertanyaan exit ga muncul
 			  exitPrompt=false;
+			  // buat thread agar satu detik kemudian exitPrompt bernilai true
 			  setTimeout(function (){exitPrompt=true;}, 1000);
 		  }
       },
-	  // scan error
+	  // scan error tampilkan alert
       function (error) {
           myApp.alert("Scanning failed: " + error);
       }
    );
 });
+
+// Popup profil siswa
+// Still Work In Progress ;)
 function showProfile(data){
 	var prof='<div class="popup popup-profile">'+
 	  '<div id="wrapper">'+
 		'<div id="profile">'+
-		  '<div class="img"></div>'+
+		  '<div class="img cowok"></div>'+
 		  '<div class="info">'+
 			'<strong>Jack Sparrow</strong>. I\'m a <strong>50 year old</strong> self-employed <strong>Pirate</strong> from the <strong>Caribbean</strong>.'+
 		  '</div>'+
@@ -183,6 +204,3 @@ function showProfile(data){
     '</div>';
 	myApp.popup(prof);
 }
-$$(".link2").on("click", function (){
-	myApp.alert("Hello Agus. press backbutton to close me");
-});
